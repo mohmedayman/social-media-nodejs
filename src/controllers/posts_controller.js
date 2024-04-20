@@ -1,6 +1,7 @@
 import * as fs from "fs";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
+import Post from "./../models/post_model.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -16,7 +17,7 @@ class PostsController {
         status: "success",
         results: posts.length,
         data: {
-          posts,
+          postsFromDB,
         },
       });
     } catch (error) {
@@ -51,9 +52,10 @@ class PostsController {
     }
   }
 
-  static createNewPost(req, res, next) {
+  static async createNewPost(req, res, next) {
     try {
-      const requiredFields = ["author", "content", "username"];
+      const requiredFields = ["content", "username"];
+
       for (const field of requiredFields) {
         if (!req.body[field]) {
           return res.status(400).json({
@@ -62,7 +64,6 @@ class PostsController {
           });
         }
       }
-
       const newID = posts.length > 0 ? posts[posts.length - 1].id + 1 : 1;
       const newPost = {
         id: newID,
