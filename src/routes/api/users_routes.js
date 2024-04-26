@@ -4,6 +4,20 @@ const UsersRoutes = Router();
 
 import userController from "./../../controllers/users_controller.js";
 
-UsersRoutes.route("/").post(userController.createNewUser);
+UsersRoutes.route("/:id")
+  .get(userController.getUserById);
+
+UsersRoutes.route("/")
+  .get(userController.getAllUsers);
+
+
+  
+
+UsersRoutes.route("/addUser")
+  .post(userController.createNewUser);
+
+
+
+
 
 export { UsersRoutes };

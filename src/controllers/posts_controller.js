@@ -1,181 +1,69 @@
-import * as fs from "fs";
-import { fileURLToPath } from "url";
-import { dirname } from "path";
-import Post from "./../models/post_model.js";
+import Post from "../models/post_model.js";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-let posts = JSON.parse(
-  fs.readFileSync(`${__dirname}/../../dev-data/data/posts.json`)
-);
-
-class PostsController {
-  static getAllPosts(req, res, next) {
+const postController = {
+  // Add a new post for a specific user
+  addPost: async (req, res) => {
     try {
-      res.status(200).json({
-        status: "success",
-        results: posts.length,
-        data: {
-          postsFromDB,
-        },
-      });
+      const userId = req.params.userId;
+      const { content } = req.body;
+      const newPost = new Post({ user: userId, content });
+      await newPost.save();
+      res.status(201).json({ message: "Post created successfully", post: newPost });
     } catch (error) {
-      res.status(500).json({
-        status: "error",
-        message: "Internal server error",
-      });
+      res.status(500).json({ message: "Internal server error", error: error.message });
     }
-  }
+  },
 
-  static getOnePost(req, res, next) {
+  // Delete a post by post ID for a specific user
+  deletePost: async (req, res) => {
     try {
-      const postId = +req.params.id;
-      const post = posts.find((p) => p.id === postId);
+      const userId = req.params.userId;
+      const postId = req.params.postId;
+      await Post.findOneAndDelete({ _id: postId, user: userId });
+      res.json({ message: "Post deleted successfully" });
+    } catch (error) {
+      res.status(500).json({ message: "Internal server error", error: error.message });
+    }
+  },
+
+  // Update a post by post ID for a specific user
+  updatePost: async (req, res) => {
+    try {
+      const userId = req.params.userId;
+      const postId = req.params.postId;
+      const { content } = req.body;
+      const updatedPost = await Post.findOneAndUpdate({ _id: postId, user: userId }, { content }, { new: true });
+      res.json({ message: "Post updated successfully", post: updatedPost });
+    } catch (error) {
+      res.status(500).json({ message: "Internal server error", error: error.message });
+    }
+  },
+
+
+  getPost: async (req, res) => {
+    try {
+      const userId = req.params.userId;
+      const postId = req.params.postId;
+      const post = await Post.findOne({ _id: postId, user: userId }).populate("comments");
       if (!post) {
-        return res.status(404).json({
-          status: "error",
-          message: "Post not found",
-        });
+        return res.status(404).json({ message: "Post not found" });
       }
-      res.status(200).json({
-        status: "success",
-        data: {
-          post,
-        },
-      });
+      res.json(post);
     } catch (error) {
-      res.status(500).json({
-        status: "error",
-        message: "Internal server error",
-      });
+      res.status(500).json({ message: "Internal server error", error: error.message });
     }
-  }
+  },
 
-  static async createNewPost(req, res, next) {
+  // Get all posts for a specific user
+  getAllPosts: async (req, res) => {
     try {
-      const requiredFields = ["content", "username"];
-
-      for (const field of requiredFields) {
-        if (!req.body[field]) {
-          return res.status(400).json({
-            status: "error",
-            message: `${field} is required`,
-          });
-        }
-      }
-      const newID = posts.length > 0 ? posts[posts.length - 1].id + 1 : 1;
-      const newPost = {
-        id: newID,
-        comments: [],
-        timestamp: new Date().toISOString(),
-        ...req.body,
-      };
-
-      posts.push(newPost);
-
-      fs.writeFile(
-        `${__dirname}/../../dev-data/data/posts.json`,
-        JSON.stringify(posts),
-        (err) => {
-          if (err) {
-            return res.status(500).json({
-              status: "error",
-              message: "Failed to save post",
-            });
-          }
-          res.status(201).json({
-            status: "success",
-            data: {
-              newPost,
-            },
-          });
-        }
-      );
+      const userId = req.params.userId;
+      const posts = await Post.find({ user: userId }).populate("comments");
+      res.json(posts);
     } catch (error) {
-      res.status(500).json({
-        status: "error",
-        message: "Internal server error",
-      });
+      res.status(500).json({ message: "Internal server error", error: error.message });
     }
-  }
+  },
+};
 
-  static deletePost(req, res, next) {
-    try {
-      const postId = +req.params.id;
-      const postIndex = posts.findIndex((p) => p.id === postId);
-      if (postIndex === -1) {
-        return res.status(404).json({
-          status: "error",
-          message: "Post not found",
-        });
-      }
-
-      posts.splice(postIndex, 1);
-
-      fs.writeFile(
-        `${__dirname}/../../dev-data/data/posts.json`,
-        JSON.stringify(posts),
-        (err) => {
-          if (err) {
-            return res.status(500).json({
-              status: "error",
-              message: "Failed to delete post",
-            });
-          }
-          res.status(204).json({
-            status: "success",
-            data: null,
-          });
-        }
-      );
-    } catch (error) {
-      res.status(500).json({
-        status: "error",
-        message: "Internal server error",
-      });
-    }
-  }
-
-  static updatePost(req, res, next) {
-    try {
-      const postId = +req.params.id;
-      const postIndex = posts.findIndex((p) => p.id === postId);
-      if (postIndex === -1) {
-        return res.status(404).json({
-          status: "error",
-          message: "Post not found",
-        });
-      }
-
-      const updatedPost = { ...posts[postIndex], ...req.body };
-      posts[postIndex] = updatedPost;
-
-      fs.writeFile(
-        `${__dirname}/../../dev-data/data/posts.json`,
-        JSON.stringify(posts),
-        (err) => {
-          if (err) {
-            return res.status(500).json({
-              status: "error",
-              message: "Failed to update post",
-            });
-          }
-          res.status(200).json({
-            status: "success",
-            data: {
-              post: updatedPost,
-            },
-          });
-        }
-      );
-    } catch (error) {
-      res.status(500).json({
-        status: "error",
-        message: "Internal server error",
-      });
-    }
-  }
-}
-
-export default PostsController;
+export default postController;
