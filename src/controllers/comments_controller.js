@@ -9,11 +9,7 @@ let posts = JSON.parse(
   fs.readFileSync(`${__dirname}/../../dev-data/data/posts.json`)
 );
 
-
-
 class CommentsController {
-
-
   static getAllComments(req, res, next) {
     try {
       const postId = +req.params.postId;
@@ -50,30 +46,30 @@ class CommentsController {
       if (postIndex === -1) {
         return res.status(404).json({
           status: "error",
-          message: Post with ID ${postId} not found,
+          message: "Post with ID ${postId} not found",
         });
       }
-  
+
       const requiredFields = ["author", "content", "username"];
       for (const field of requiredFields) {
         if (!req.body[field]) {
           return res.status(400).json({
             status: "error",
-            message: ${field} is required,
+            message: "${field} is required",
           });
         }
       }
-  
+
       const newComment = {
         id: posts[postIndex].comments.length + 1, // Generating comment ID
         timestamp: new Date().toISOString(),
         ...req.body,
       };
-  
+
       posts[postIndex].comments.push(newComment);
-  
+
       fs.writeFile(
-        ${__dirname}/../../dev-data/data/posts.json,
+        `${__dirname}/../../dev-data/data/posts.json`,
         JSON.stringify(posts),
         (err) => {
           if (err) {
@@ -97,7 +93,6 @@ class CommentsController {
       });
     }
   }
-  
 
   static deleteComment(req, res, next) {
     try {
@@ -110,7 +105,7 @@ class CommentsController {
           message: "Post not found",
         });
       }
-  
+
       const commentIndex = posts[postIndex].comments.findIndex(
         (c) => c.id === commentId
       );
@@ -120,11 +115,11 @@ class CommentsController {
           message: "Comment not found",
         });
       }
-  
+
       posts[postIndex].comments.splice(commentIndex, 1);
-  
+
       fs.writeFile(
-        ${__dirname}/../../dev-data/data/posts.json,
+        `${__dirname}/../../dev-data/data/posts.json`,
         JSON.stringify(posts),
         (err) => {
           if (err) {
@@ -146,7 +141,7 @@ class CommentsController {
       });
     }
   }
-  
+
   static updateComment(req, res, next) {
     try {
       const postId = +req.params.postId;
@@ -158,7 +153,7 @@ class CommentsController {
           message: "Post not found",
         });
       }
-  
+
       const commentIndex = posts[postIndex].comments.findIndex(
         (c) => c.id === commentId
       );
@@ -168,12 +163,15 @@ class CommentsController {
           message: "Comment not found",
         });
       }
-  
-      const updatedComment = { ...posts[postIndex].comments[commentIndex], ...req.body };
+
+      const updatedComment = {
+        ...posts[postIndex].comments[commentIndex],
+        ...req.body,
+      };
       posts[postIndex].comments[commentIndex] = updatedComment;
-  
+
       fs.writeFile(
-        ${__dirname}/../../dev-data/data/posts.json,
+        `${__dirname}/../../dev-data/data/posts.json`,
         JSON.stringify(posts),
         (err) => {
           if (err) {
@@ -194,9 +192,9 @@ class CommentsController {
       res.status(500).json({
         status: "error",
         message: "Internal server error",
-      });
-    }
-  }
+      });
+    }
+  }
 }
 
 export default CommentsController;
