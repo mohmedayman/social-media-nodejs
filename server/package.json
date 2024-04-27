@@ -1,0 +1,55 @@
+{
+  "name": "social-media-nodejs",
+  "version": "1.0.0",
+  "description": "Little Project to Social Media Website using NodeJs",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "node index.js",
+    "client": "cd ../client && npm start",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "nodemon --env-file=.env index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mohamed25885/social-media-nodejs.git"
+  },
+  "keywords": [
+    "social-media",
+    "nodejs",
+    "node",
+    "social",
+    "media",
+    "blog",
+    "npm"
+  ],
+  "author": "Team-9",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Mohamed25885/social-media-nodejs/issues"
+  },
+  "homepage": "https://github.com/Mohamed25885/social-media-nodejs#readme",
+  "dependencies": {
+    "autoprefixer": "^10.4.19",
+    "axios": "^1.6.8",
+    "bcrypt": "^5.1.1",
+    "concurrently": "^8.2.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "formlink": "^0.0.11",
+    "joi": "^17.12.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.3.2",
+    "mongoose-unique-validator": "^5.0.0",
+    "postcss": "^8.4.38",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.23.0",
+    "tailwindcss": "^3.4.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
