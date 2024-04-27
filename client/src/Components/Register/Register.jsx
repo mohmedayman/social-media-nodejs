@@ -21,12 +21,11 @@ const Register = () => {
 
         result = await result.json;
         localStorage.setItem("User", JSON.stringify(result));
+        window.location.href = '/'; 
 
     
     };
 	
-    
-
     return (
         <div className="h-screen md:flex">
             <div className="relative overflow-hidden md:flex w-1/2 bg-gradient-to-tr from-blue-800 to-purple-700 i justify-around items-center hidden">
