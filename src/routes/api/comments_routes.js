@@ -9,14 +9,16 @@ const CommentsRouter = express.Router();
 
  
 
-CommentsRoutes.route("/:postId/comments")
-    .get(CommentsController.getAllComments)
-    .post(CommentsController.addComment);
+CommentsRoutes.route("/:userId/:postId")
+    .post(CommentsController.addComment)
 
-CommentsRoutes.route("/:postId/comments/:commentId")
+
+CommentsRoutes.route("/:postId")
+    .get(CommentsController.getAllCommentsForPost);
+
+CommentsRoutes.route("/:commentId")
     .delete(CommentsController.deleteComment)
-    .patch(CommentsController.updateComment)
-
+    .patch(CommentsController.updateComment);
 
 
 
