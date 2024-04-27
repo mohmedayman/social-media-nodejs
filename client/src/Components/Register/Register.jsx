@@ -21,7 +21,7 @@ const Register = () => {
 
         result = await result.json;
         localStorage.setItem("User", JSON.stringify(result));
-        window.location.href = '/'; 
+      
 
     
     };
