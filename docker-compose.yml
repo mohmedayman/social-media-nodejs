@@ -1,0 +1,28 @@
+version: '3.7'
+
+services:
+  serverside:
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: docker/serverside/Dockerfile
+    container_name: api
+    image: social_media:${APP_VERSION:-latest}
+    hostname: api
+    ports:
+      - ${APP_PORT:-8000}:${APP_PORT:-8000}
+    networks:
+      - backend
+    tty: true
+    restart: always
+    environment:
+      APP_ENV: "${APP_ENV}"
+
+networks:
+  backend:
+    driver: 'bridge'
+
+volumes:
+  db_data:
+    name: volumes_dir
