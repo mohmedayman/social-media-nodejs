@@ -4,7 +4,6 @@ import { Router } from "express";
 const CommentsRoutes = Router();
 
 import CommentsController from './../../controllers/comments_controller.js';
-const CommentsRouter = express.Router();
 
 
  

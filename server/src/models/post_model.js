@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
 
 const postSchema = new mongoose.Schema({
-  user: {
+  userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
-    // required: true,
+    required: true,
   },
   content: {
     type: String,
@@ -20,14 +20,16 @@ const postSchema = new mongoose.Schema({
       ref: "Comment",
     },
   ],
-  //   likes: [
-  //     {
-  //       type: mongoose.Schema.Types.ObjectId,
-  //       ref: "User",
-  //     },
-  //   ],
+  likes: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+  ],
 });
-
+postSchema.virtual("likesCount").get(function () {
+  return this.likes.length;
+});
 const Post = mongoose.model("Post", postSchema);
 
 export default Post;

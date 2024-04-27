@@ -1,42 +1,17 @@
 import User from "./../models/user_model.js";
+import userCreateValidator from "./../validators/user_create_validator.js";
+import jwt from "jsonwebtoken";
 
 class UserController {
   static async createNewUser(req, res, next) {
-    try {
-      const { username, email, password } = req.body;
-      if (!username || !email || !password) {
-        return res.status(400).json({
-          status: "error",
-          message: "Username, email, and password are required fields.",
-        });
-      }
-
-      // Check if the email is already existed
-      const existingUser = await User.findOne({ email });
-      if (existingUser) {
-        return res.status(409).json({
-          status: "error",
-          message: "Email is already registered.",
-        });
-      }
-
-      // Check if the username is already exited
-      const existingUsername = await User.findOne({ username });
-      if (existingUsername) {
-        return res.status(409).json({
-          status: "error",
-          message: "Username is already taken.",
-        });
-      }
-
-      const user = await User.create({
-        username,
-        email,
-        password,
+    const { error, value } = userCreateValidator(req.body);
+    if (error)
+      return res.status(400).json({
+        status: "error",
+        message: error.details[0].message,
       });
-
-      
-
+    try {
+      const user = await User.create(value);
       res.status(201).json({
         status: "success",
         data: {
@@ -44,10 +19,9 @@ class UserController {
         },
       });
     } catch (err) {
-      console.error("Error creating user:", err);
-      res.status(500).json({
+      res.status(419).json({
         status: "error",
-        message: "Internal server error",
+        message: err,
       });
     }
   }
@@ -57,7 +31,7 @@ class UserController {
       const { email, password } = req.body;
 
       // Check if the user exists
-      const user = await User.findOne({ email });
+      const user = await User.findOne({ email: email });
       if (!user) {
         return res.status(401).json({
           status: "error",
@@ -66,26 +40,30 @@ class UserController {
       }
 
       // Check if the password is correct
-      const isPasswordValid = await bcrypt.compare(password, user.password);
+      const isPasswordValid = user.comparePassword(password);
       if (!isPasswordValid) {
         return res.status(401).json({
           status: "error",
           message: "Invalid email or password.",
         });
       }
-      res.redirect('/');
-
+      const token = jwt.sign(
+        { id: user._id, email: user.email },
+        process.env.JWT_SECRET,
+        {
+          expiresIn: "90d",
+        }
+      );
       res.status(200).json({
         status: "success",
         data: {
-          user,
+          token: token,
         },
       });
     } catch (err) {
-      console.error("Error logging in user:", err);
       res.status(500).json({
         status: "error",
-        message: "Internal server error",
+        message: err,
       });
     }
   }
