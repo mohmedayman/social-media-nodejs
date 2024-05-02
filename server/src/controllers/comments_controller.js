@@ -1,4 +1,5 @@
 import Comment from "../models/comment_model.js";
+import Post from "../models/post_model.js";
 import commentValidator from "../validators/comments_create_validator.js";
 
 const commentController = {
