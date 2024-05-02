@@ -1,5 +1,5 @@
 import Comment from "../models/comment_model.js";
-import commentValidator from "../validators/commentValidator.js";
+import commentValidator from "../validators/comments_create_validator.js";
 
 const commentController = {
   // Add a new comment
@@ -22,6 +22,16 @@ const commentController = {
       const newComment = new Comment({ user: userId, post: postId, content: value.content });
       await newComment.save();
       
+      // Fetch the post to which the comment is associated
+      const post = await Post.findById(postId);
+      
+
+      // Update the comments array of the fetched post with the ID of the newly created comment
+      post.comments.push(newComment._id);
+      
+      // Save the updated post back to the database
+      await post.save();
+
       res.status(201).json({ 
         status: "success",
         message: "Comment created successfully", 
@@ -40,7 +50,26 @@ const commentController = {
   getAllCommentsForPost: async (req, res) => {
     try {
       const postId = req.params.postId;
-      const comments = await Comment.find({ post: postId });
+  
+      // Retrieve the post by its ID
+      const post = await Post.findById(postId);
+  
+      if (!post) {
+        return res.status(404).json({
+          status: "error",
+          message: "Post not found",
+        });
+      }
+  
+      // Get the comment IDs from the comment array in the post object
+      const commentIds = post.comments;
+  
+      // Fetch the comments using the retrieved comment IDs
+      const comments = await Promise.all(commentIds.map(async (commentId) => {
+        const comment = await Comment.findById(commentId);
+        return comment;
+      }));
+  
       res.json({
         status: "success",
         data: {
