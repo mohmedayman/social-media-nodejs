@@ -22,7 +22,7 @@ const Register = () => {
         result = await result.json();
         if (result.status === "success") {
             localStorage.setItem("User", JSON.stringify(result));
-            navigate("/login");
+            navigate("/");
         } else {
             alert("Invalid Credentials");
         }
@@ -80,7 +80,7 @@ const Register = () => {
 
                     <button type="submit" className="block w-full bg-indigo-600 mt-4 py-2 rounded-2xl text-white font-semibold mb-2">Register</button>
                     <p className="text-sm font-light text-gray-500 dark:text-gray-400">
-                        Already have an account? <a href="/login" className="font-medium text-primary-600 hover:underline dark:text-primary-500">Login here</a>
+                        Already have an account? <a href="/" className="font-medium text-primary-600 hover:underline dark:text-primary-500">Login here</a>
                     </p>
                 </form>
             </div>

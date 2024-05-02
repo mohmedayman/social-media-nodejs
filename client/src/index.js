@@ -15,7 +15,7 @@ import Logout from './Components/Logout/Logout';
 const router = createBrowserRouter([
   {
 
-    path: '/',
+    path: '/home',
     element: <HomePage />
   },
 
@@ -25,7 +25,7 @@ const router = createBrowserRouter([
   },
 
   {
-    path: '/login',
+    path: '/',
     element: <Login />
 
   },
