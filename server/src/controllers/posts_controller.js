@@ -74,8 +74,13 @@ const postController = {
     try {
       const postId = req.params.postId;
       const post = await Post.findOne({ _id: postId })
+        .sort({ createdAt: "descending" })
         .populate("likes", "_id")
-        .populate("comments");
+        .populate({
+          path: "comments",
+          options: { sort: { createdAt: "descending" } },
+        })
+        .exec();
       if (!post) {
         return res.status(404).json({ message: "Post not found" });
       }
@@ -92,7 +97,14 @@ const postController = {
     try {
       const userId = req.query.userId;
       const query = userId ? { userId: userId } : {};
-      const posts = await Post.find(query).populate("likes", "_id").lean();
+      const posts = await Post.find(query)
+        .sort({ createdAt: "descending" })
+        .populate("likes", "_id")
+        .populate({
+          path: "comments",
+          options: { sort: { createdAt: "descending" } },
+        })
+        .exec();
       res.json(posts);
     } catch (error) {
       res
