@@ -35,12 +35,6 @@ const router = createBrowserRouter([
 
   },
   {
-    path: '/logout',
-    element: <Logout />
-
-  },
-
-  {
     path: '/posts',
     element: <Post />
 
@@ -49,18 +43,8 @@ const router = createBrowserRouter([
   {
     path: 'sidebar',
     element: <Sidebar />
-  }
-
-  {
-    path: '/posts',
-    element: <Post />
-
   },
 
-  {
-    path: 'sidebar',
-    element: <Sidebar />
-  }
 
 ]);
 

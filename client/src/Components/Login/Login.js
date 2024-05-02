@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const Login = () => {
+    const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
@@ -16,8 +18,14 @@ const Login = () => {
          },
         });
 
-        result = await result.json;
-        localStorage.setItem("User", JSON.stringify(result));
+        result = await result.json();
+        if (result.status === "success"){
+            localStorage.setItem("Token", result.data.token);
+            localStorage.setItem("User", JSON.stringify(result.data.user));
+            navigate("/");
+        } else {
+            alert("Invalid Credentials");
+        }
     };
 	
     
@@ -60,7 +68,7 @@ const Login = () => {
 
                     <button type="submit" className="block w-full bg-indigo-600 mt-4 py-2 rounded-2xl text-white font-semibold mb-2">Login</button>
                     <p className="text-sm font-light text-gray-500 dark:text-gray-400">
-                        Already have an account? <a href="#" className="font-medium text-primary-600 hover:underline dark:text-primary-500">Login here</a>
+                        Don't have an account? <a href="/register" className="font-medium text-primary-600 hover:underline dark:text-primary-500">Register here</a>
                     </p>
                 </form>
             </div>
