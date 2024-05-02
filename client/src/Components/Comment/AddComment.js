@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 
 const AddComment = ({ userId, postId, addCommentToPost }) => {
   const [commentContent, setCommentContent] = useState('');
-  console.log("userId", userId)
   const handleInputChange = (event) => {
     setCommentContent(event.target.value);
   };
@@ -10,11 +9,13 @@ const AddComment = ({ userId, postId, addCommentToPost }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      console.log({userId, postId})
       let response = await fetch(`http://localhost:5000/api/comments/${userId}/${postId}`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-        },
+          'Content-Type' : 'application/json',
+          'authorization': "Bearer " + localStorage.getItem('Token'),
+       },
         body: JSON.stringify({
           content: commentContent,
         }),

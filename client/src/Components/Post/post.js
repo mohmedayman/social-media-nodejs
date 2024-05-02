@@ -70,6 +70,9 @@ const Post = () => {
   return (
     <div className="text-black dark:text-slate-100 bg-slate-900">
       <div className="wrapper pt-10 max-w-3xl ml-auto mr-auto mt-6">
+      <h1 className="text-4xl font-bold text-center mt-4 mb-10">
+        Hi <span className="text-blue-500">{loggedUser.username}</span>, welcome back!
+      </h1>
         {/* Add the form for creating new posts */}
         <NewPostForm addPost={addPost}/>
 
