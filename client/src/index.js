@@ -10,6 +10,7 @@ import Login from './Components/Login/Login';
 import Post from  './Components/Post/post'
 import Sidebar from './Components/Sidebar/Sidebar';
 
+import Logout from './Components/Logout/Logout';
 
 const router = createBrowserRouter([
   {
@@ -24,10 +25,31 @@ const router = createBrowserRouter([
   },
 
   {
-    path: 'login',
+    path: '/login',
     element: <Login />
 
   },
+  {
+    path: '/logout',
+    element: <Logout />
+
+  },
+  {
+    path: '/logout',
+    element: <Logout />
+
+  },
+
+  {
+    path: '/posts',
+    element: <Post />
+
+  },
+
+  {
+    path: 'sidebar',
+    element: <Sidebar />
+  }
 
   {
     path: '/posts',

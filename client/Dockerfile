@@ -8,10 +8,11 @@ WORKDIR /home/node/app
 RUN addgroup app && adduser -S -G app app
 
 COPY --chown=node:node package*.json .
+
 RUN npm install
 
 COPY --chown=node:node . .
 USER node
 
 
-CMD [ "npm", "run", "server" ]
+CMD [ "npm", "run", "start" ]

@@ -1,5 +1,6 @@
 import Comment from "../models/comment_model.js";
-import Post from "../models/post_model.js";
+import commentValidator from "../validators/commentValidator.js";
+
 const commentController = {
   // Add a new comment
   addComment: async (req, res) => {
@@ -8,16 +9,17 @@ const commentController = {
       const postId = req.params.postId;
       const { content } = req.body;
       
-      // Check if content is provided
-      if (!content) {
+      const { error, value } = commentValidator({ content });
+
+      if (error) {
         return res.status(400).json({
           status: "error",
-          message: "Content is required.",
+          message: error.details[0].message,
         });
       }
 
       // Create a new comment
-      const newComment = new Comment({ user: userId, post: postId, content });
+      const newComment = new Comment({ user: userId, post: postId, content: value.content });
       await newComment.save();
       
       // Fetch the post to which the comment is associated
@@ -106,7 +108,18 @@ const commentController = {
     try {
       const commentId = req.params.commentId;
       const { content } = req.body;
-      const updatedComment = await Comment.findByIdAndUpdate(commentId, { content }, { new: true });
+      
+      const { error, value } = commentValidator({ content }); 
+
+      if (error) {
+        return res.status(400).json({
+          status: "error",
+          message: error.details[0].message,
+        });
+      }
+
+      const updatedComment = await Comment.findByIdAndUpdate(commentId, { content: value.content }, { new: true });
+      
       res.json({ 
         status: "success",
         message: "Comment updated successfully", 
