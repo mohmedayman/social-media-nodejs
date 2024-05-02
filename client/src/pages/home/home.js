@@ -10,7 +10,7 @@ function HomePage() {
     const user = localStorage.getItem('User');
     const token = localStorage.getItem('Token');
     if (!user || !token) {
-      navigate('/login'); // Redirect to login if either user or token is missing
+      navigate('/'); // Redirect to login if either user or token is missing
     }
   }, [navigate]);
 
