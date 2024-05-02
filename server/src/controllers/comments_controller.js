@@ -1,5 +1,5 @@
 import Comment from "../models/comment_model.js";
-import commentValidator from "../validators/commentValidator.js";
+import commentValidator from "../validators/comments_create_validator.js";
 
 const commentController = {
   // Add a new comment
