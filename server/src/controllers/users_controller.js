@@ -57,6 +57,7 @@ class UserController {
       res.status(200).json({
         status: "success",
         data: {
+          user,
           token: token,
         },
       });
