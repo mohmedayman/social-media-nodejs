@@ -10,7 +10,7 @@ const AddComment = ({ userId, postId, addCommentToPost }) => {
     e.preventDefault();
     try {
       console.log({userId, postId})
-      let response = await fetch(`http://localhost:5000/api/comments/${userId}/${postId}`, {
+      let response = await fetch(`http://localhost:5000/api/comments/${postId}`, {
         method: 'POST',
         headers: {
           'Content-Type' : 'application/json',

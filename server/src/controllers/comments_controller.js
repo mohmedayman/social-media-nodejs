@@ -6,7 +6,7 @@ const commentController = {
   // Add a new comment
   addComment: async (req, res) => {
     try {
-      const userId = req.params.userId;
+      const userId = req.user.id;
       const postId = req.params.postId;
       const { content } = req.body;
 
@@ -18,6 +18,16 @@ const commentController = {
           message: error.details[0].message,
         });
       }
+      // Fetch the post to which the comment is associated
+      let post;
+      try {
+        post = await Post.findById({ _id: postId });
+      } catch (error) {
+        return res.status(400).json({
+          status: "error",
+          message: "Post Id in invalid",
+        });
+      }
 
       // Create a new comment
       const newComment = new Comment({
@@ -26,9 +36,6 @@ const commentController = {
         content: value.content,
       });
       await newComment.save();
-
-      // Fetch the post to which the comment is associated
-      const post = await Post.findById(postId);
 
       // Update the comments array of the fetched post with the ID of the newly created comment
       post.comments.push(newComment._id);

@@ -10,7 +10,7 @@ import check_authenticated from "../../middlewares/check_authenticated.js";
 
  
 
-CommentsRoutes.use(CheckAuthenticated()).route("/:userId/:postId")
+CommentsRoutes.use(CheckAuthenticated()).route("/:postId")
     .post(CommentsController.addComment)
 
 
